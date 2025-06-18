@@ -1,0 +1,50 @@
+🐾 AI Desktop Pet + Chatbot – Mini Roadmap with Time Phases
+✅ Phase 1: Visual Pet Basics (1 day – Saturday)
+ Create a Pygame window fixed at the bottom of the screen (simulate taskbar)
+
+ Display a pet sprite that moves left and right
+
+ Bounce back at edges
+
+ Handle idle animation and walking state
+
+✅ Phase 2: Add Pet Personality (1–2 days – Sunday-Monday)
+ Add idle animations (sit, yawn, etc.)
+
+ Cycle between walking and idle randomly
+
+ Add simple "emotions" (happy, bored, sleepy)
+
+ Show mood with emoji or speech bubble
+
+✅ Phase 3: AI Chatbot Core (2 days – Tuesday-Wednesday)
+ Add a text input box or popup for chatting
+
+ Connect to OpenAI’s GPT API or local model (like llama.cpp or ollama)
+
+ Design a simple loop: User types → Pet replies
+
+ Make responses sound like a character (cute, sarcastic, etc.)
+
+✅ Phase 4: Integration & Memory (1 day – Thursday)
+ Keep chat history
+
+ Store basic memory (e.g., your name, hobbies)
+
+ Make pet say random lines when idle (based on personality or memory)
+
+✅ Phase 5: Polish for Portfolio (1–2 days – Friday–Saturday)
+ Pet reacts to chat tone (happy, confused)
+
+ Add hotkey or button to open/close chat
+
+ Add sound or simple SFX for mood changes
+
+ Final testing, clean UI, record a short demo
+
+💡 Total: 6–7 days
+Fun to build, gradually increasing in complexity
+
+Full of learning: GUI, animations, state machines, AI integration
+
+A real "wow" project for your portfolio
