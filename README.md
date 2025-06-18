@@ -11,6 +11,9 @@ This is a desktop pet created using Python and Pygame. The pet is animated and i
 - Transparent and frameless window
 - Always stays on top of other windows
 
+![icon](https://github.com/user-attachments/assets/961a09f9-ca04-48da-9770-640dfaecedee)
+
+
 ## How to Run
 
 ### 1. Install Python
