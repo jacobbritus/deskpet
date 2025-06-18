@@ -1,7 +1,0 @@
-# created by virtualenv automatically
-.venv/Lib
-.venv
-notes/
-.venv/
-.idea/
-__pycache__/
