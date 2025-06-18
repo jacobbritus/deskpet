@@ -4,8 +4,6 @@ import win32con
 import win32gui
 import os
 from win32api import GetSystemMetrics
-
-
 from sprites_config import beige_cat
 from pet import Pet
 
@@ -46,10 +44,31 @@ cat = Pet(
     window = window,
     display_width = window_width,
     sprite_dict = beige_cat,
-    spawn_coordinates = (320, 80),
+    spawn_coordinates = (window_width - 900, 80),
     speed = 0.1,
     frame = 0,
 )
+
+cat2 = Pet(
+    window = window,
+    display_width = window_width,
+    sprite_dict = beige_cat,
+    spawn_coordinates = (window_width - 600, 80),
+    speed = 0.1,
+    frame = 0,
+)
+
+cat3 = Pet(
+    window = window,
+    display_width = window_width,
+    sprite_dict = beige_cat,
+    spawn_coordinates = (window_width - 300, 80),
+    speed = 0.1,
+    frame = 0,
+)
+
+
+
 
 while True:
     window.fill((255, 255, 255))
@@ -64,21 +83,35 @@ while True:
         # event.button represents left click
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
                 cat.mouse_action = "grab"
+                cat2.mouse_action = "grab"
+                cat3.mouse_action = "grab"
+
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 cat.meow()
                 cat.mouse_action = "pet"
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-            ...
-            # chat.get_position(cat.x)
-            # chat.open_chat()
+                cat2.meow()
+                cat2.mouse_action = "pet"
+                cat3.meow()
+                cat3.mouse_action = "pet"
         elif event.type == pygame.MOUSEBUTTONUP and event.button in [1, 2, 3]:
                 cat.mouse_action = None
+                cat2.mouse_action = None
+                cat3.mouse_action = None
+
                 pygame.mouse.set_visible(True) # make cursor visible again
 
     window.fill(fuchsia)
 
 
+
     cat.draw_self()
+    cat2.draw_self()
+    cat3.draw_self()
+
+
+
+
+
     clock.tick(120)
 
 

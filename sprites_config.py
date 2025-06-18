@@ -1,6 +1,5 @@
 import pygame
 
-duck_dict = {}
 
 def sprite_converter(sprite_file, sprites, sprite_width, sprite_height):
     sprite = pygame.image.load(sprite_file)
@@ -11,9 +10,6 @@ def sprite_converter(sprite_file, sprites, sprite_width, sprite_height):
 }
     x = 0
     y = 0
-
-
-
 
     for i in range(sprites):
         # get a cut based on the column (y) and the row (x)
@@ -26,29 +22,9 @@ def sprite_converter(sprite_file, sprites, sprite_width, sprite_height):
         right = pygame.transform.flip(image, True, False)
         sprite_dict["right"].append(right)
 
-
-
         x += sprite_width
 
-
     return sprite_dict
-
-
-
-duck_walk1 = sprite_converter("sprites/mallard_male/duck_walk_1.png", 7, 32, 32)
-duck_idle = sprite_converter("sprites/mallard_male/duck_idle.png", 4, 32, 32)
-duck_flying_1 = sprite_converter("sprites/mallard_male/duck_flying_1.png", 7, 32, 32)
-duck_sit = sprite_converter("sprites/mallard_male/duck_sit.png", 5, 32, 32)
-
-
-
-
-duck_dict.update({"walk": duck_walk1})
-duck_dict.update({"idle": duck_idle})
-duck_dict.update({"flying1": duck_flying_1})
-duck_dict.update({"sit": duck_sit})
-
-
 
 
 black_cat = {}
