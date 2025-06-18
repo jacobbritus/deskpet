@@ -6,7 +6,7 @@ import os
 from win32api import GetSystemMetrics
 
 
-from sprites_init import beige_cat
+from sprites_config import beige_cat
 from pet import Pet
 
 # initialize pygame
