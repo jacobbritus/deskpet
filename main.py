@@ -1,3 +1,6 @@
+import random
+import threading
+
 import pygame
 import win32api
 import win32con
@@ -40,35 +43,30 @@ win32gui.SetWindowPos(pygame.display.get_wm_info()['window'], win32con.HWND_TOPM
 display_text = False
 
 
-cat = Pet(
-    window = window,
-    display_width = window_width,
-    sprite_dict = beige_cat,
-    spawn_coordinates = (window_width - 900, 80),
-    speed = 0.1,
-    frame = 0,
-)
 
-cat2 = Pet(
-    window = window,
-    display_width = window_width,
-    sprite_dict = beige_cat,
-    spawn_coordinates = (window_width - 600, 80),
-    speed = 0.1,
-    frame = 0,
-)
 
-cat3 = Pet(
-    window = window,
-    display_width = window_width,
-    sprite_dict = beige_cat,
-    spawn_coordinates = (window_width - 300, 80),
-    speed = 0.1,
-    frame = 0,
-)
+cats = []
 
 
 
+cats.append(Pet(window = window,
+                display_width = window_width,
+                sprite_dict = beige_cat,
+                spawn_coordinates = (random.randint(0, window_width), 80),
+                speed = 0.1,
+                frame = 0, ))
+
+color = (255, 192, 203)
+
+def detect_collision(cats):
+    # detect collisions (pure brain muscles this one lol)
+    for cat_index, cat in enumerate(cats): # go through each cat
+        for other_cat_index, other in enumerate(cats): # go through all cats per cat
+            if cat_index == other_cat_index: # skip itself
+                pass
+            else:
+                if cat.rect.collidepoint((other.x, other.y)): # if cat collides with other cats
+                    cat.x = cat.x - 1 # move
 
 while True:
     window.fill((255, 255, 255))
@@ -79,38 +77,56 @@ while True:
             pygame.quit()
             exit()
 
+
+        # click "a" to spawn more cats
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                cats.append(Pet(window=window,
+                                display_width=window_width,
+                                sprite_dict=beige_cat,
+                                spawn_coordinates=(random.randint(0, window_width), 80),
+                                speed=0.1,
+                                frame=0, ))
+
         # make the pet draggable if left mouse button is held down
-        # event.button represents left click
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
+            for cat in cats:
                 cat.mouse_action = "grab"
-                cat2.mouse_action = "grab"
-                cat3.mouse_action = "grab"
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                cat.meow()
+            for cat in cats:
                 cat.mouse_action = "pet"
-                cat2.meow()
-                cat2.mouse_action = "pet"
-                cat3.meow()
-                cat3.mouse_action = "pet"
-        elif event.type == pygame.MOUSEBUTTONUP and event.button in [1, 2, 3]:
-                cat.mouse_action = None
-                cat2.mouse_action = None
-                cat3.mouse_action = None
 
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+
+
+            for cat in cats:
+                if cat.follow:
+                    cat.follow = False
+                    cat.current_animation = f"{subject.mood}_idle"
+                else:
+                    cat.speed = 10
+                    cat.mouse_action = "follow"
+
+
+        elif event.type == pygame.MOUSEBUTTONUP and event.button in [1, 2, 3]:
+            for subject in cats:
+                subject.mouse_action = None
                 pygame.mouse.set_visible(True) # make cursor visible again
 
+
+
+
     window.fill(fuchsia)
+    # pygame.draw.rect(window, color, pygame.Rect(0, 80, window_width, window_height))
 
 
-
-    cat.draw_self()
-    cat2.draw_self()
-    cat3.draw_self()
+    for subject in cats:
+        subject.draw_self()
 
 
-
-
+    # detect collisions (pure brain muscles this one lol)
+    detect_collision(cats)
 
     clock.tick(120)
 
