@@ -9,8 +9,8 @@ import os
 from win32api import GetSystemMetrics
 
 from mouse_interaction import Mouse
-from sprites_config import beige_cat
 from pet import Pet
+from sprites_config import color_variants
 
 # initialize pygame
 pygame.init()
@@ -49,7 +49,7 @@ mouse = Mouse(window)
 
 cats = [Pet(window=window,
             display_width=window_width,
-            sprite_dict=beige_cat,
+            color_variant= "beige_cat",
             spawn_coordinates=(random.randint(0, window_width), 80),
             speed=0.1,
             frame=0, )]
@@ -74,10 +74,6 @@ def detect_collision(cats):
 
 
 
-
-
-
-
 while True:
     window.fill((255, 255, 255))
     time_delta = clock.tick(60) / 1000.0
@@ -94,7 +90,7 @@ while True:
             if event.key == pygame.K_a:
                 cats.append(Pet(window=window,
                                 display_width=window_width,
-                                sprite_dict=beige_cat,
+                                color_variant=random.choice(color_variants),
                                 spawn_coordinates=(random.randint(0, window_width), 80),
                                 speed=0.1,
                                 frame=0, ))
@@ -136,7 +132,6 @@ while True:
 
 
     window.fill(fuchsia)
-    # pygame.draw.rect(window, color, pygame.Rect(0, 80, window_width, window_height))
 
 
 

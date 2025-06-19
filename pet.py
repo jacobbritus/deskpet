@@ -4,12 +4,13 @@ import math
 import pygame.mouse
 from datetime import datetime
 
+from sprites_config import cats_dictionary
+
 class Pet:
-    def __init__(self, window, display_width, sprite_dict, spawn_coordinates, speed, frame):
+    def __init__(self, window, color_variant, display_width, spawn_coordinates, speed, frame):
         self.window = window
         self.display_width = display_width
-
-        self.sprite_dict = sprite_dict
+        self.sprites = cats_dictionary[color_variant]
         self.x, self.y = spawn_coordinates
         self.speed = speed
         self.direction = None
@@ -288,7 +289,7 @@ class Pet:
         self.frame += sprite_iterate_speed
 
         # reset if no more frames
-        if self.frame >= len(self.sprite_dict[self.current_animation][self.direction]): self.frame = 0
+        if self.frame >= len(self.sprites[self.current_animation][self.direction]): self.frame = 0
 
 
 
@@ -318,7 +319,7 @@ class Pet:
         self.player_animations() # to animate the animations
 
         # print sprite image from the dictionary based on the current animation it is on and the direction it is facing,
-        sprite = self.sprite_dict[self.current_animation][self.direction][
+        sprite = self.sprites[self.current_animation][self.direction][
             math.floor(self.frame)]  # as well as indexing the right animation frame
         self.window.blit(sprite, (self.x, self.y))
 
