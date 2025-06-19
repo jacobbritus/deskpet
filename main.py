@@ -43,6 +43,9 @@ win32gui.SetWindowPos(pygame.display.get_wm_info()['window'], win32con.HWND_TOPM
 
 
 display_text = False
+sizes = ["small", "medium"]
+sizes_dict = {"small": {"size": (32, 32), "y": 32 + 80},
+              "medium": {"size": (64, 64), "y": 80}}
 
 
 mouse = Mouse(window)
@@ -50,11 +53,12 @@ mouse = Mouse(window)
 cats = [Pet(window=window,
             display_width=window_width,
             color_variant= "beige_cat",
-            spawn_coordinates=(random.randint(0, window_width), 80),
+            size= sizes_dict["medium"]["size"],
+            spawn_coordinates=(random.randint(0, window_width), sizes_dict["medium"]["y"]),
             speed=0.1,
             frame=0, )]
 
-color = (255, 192, 203)
+
 
 def detect_collision(cats):
     # detect collisions (pure brain muscles this one lol)
@@ -88,10 +92,17 @@ while True:
         if event.type == pygame.KEYDOWN:
             # add a new cat if a pressed
             if event.key == pygame.K_a:
+                color = random.choice(color_variants)
+                size = random.choice(sizes)
+                size_num = sizes_dict[size]["size"]
+                spawn = (random.randint(0, window_width), sizes_dict[size]["y"])
+
+                print(size)
                 cats.append(Pet(window=window,
                                 display_width=window_width,
-                                color_variant=random.choice(color_variants),
-                                spawn_coordinates=(random.randint(0, window_width), 80),
+                                color_variant=color,
+                                size = size_num,
+                                spawn_coordinates=(random.randint(0, window_width), sizes_dict[size]["y"]),
                                 speed=0.1,
                                 frame=0, ))
 

@@ -44,13 +44,16 @@ def palette_swap(image_path, output_path, old_hex, new_hex):
 
 
 # 🎨 Replace these hex codes with yours
-old_palette = ["#1b1b1b", "#131313", "#000000", "#34a641", "#49f75d"]  # old colors
-new_palette = ["#e0e0e0", "#c1baba", "#6f6f6f", "#3466f8", "#3493f8"]  # new colors
+# old_palette = ["#1b1b1b", "#131313", "#000000", "#34a641", "#49f75d"]  # old colors BLACK
+# new_palette = ["#e0e0e0", "#c1baba", "#6f6f6f", "#3466f8", "#3493f8"]  # new colors TEST
+
+old_palette = ["#6f6f6f", "#3466f8", "#3493f8"]
+new_palette = ["#212121", "#95d4f3", "#c6e9fb"]
 
 # 🖼 Replace this with your input and output file names
 # palette_swap("sprites/white_cat/Excited.png", "sprites/white_cat/Excited.png", old_palette, new_palette)
 
-##### iterating through a file
+##### iterating through a file and changing the color pallete
 
 import os
 folder = "sprites/white_cat"

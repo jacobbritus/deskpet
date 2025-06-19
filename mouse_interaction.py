@@ -40,6 +40,8 @@ class Mouse:
             if cat.mood == "angry":
                 cat.current_animation = "walk"
 
+                if not cat_rect.collidepoint(cursor_position[0], cat.y):
+                    cat.current_animation = "lay_down"
 
             # if a mouse button is being clicked
             if self.mouse_action:

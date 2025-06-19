@@ -7,7 +7,7 @@ from datetime import datetime
 from sprites_config import cats_dictionary
 
 class Pet:
-    def __init__(self, window, color_variant, display_width, spawn_coordinates, speed, frame):
+    def __init__(self, window, color_variant, size, display_width, spawn_coordinates, speed, frame):
         self.window = window
         self.display_width = display_width
         self.sprites = cats_dictionary[color_variant]
@@ -18,7 +18,6 @@ class Pet:
         self.cooldown = 0
         self.current_animation = None
         self.mood = None
-        self.width = self.height = 64
         self.no_pet_time = 0
         self.meow_cooldown = 0
         self.mood_change = False
@@ -28,6 +27,10 @@ class Pet:
         self.toggle_speech_bubble = True
         self.display_mood = False
         self.collision = False
+
+        self.size = size
+        self.width, self.height = self.size[0], self.size[0]
+
 
 
         # dict used to get a random animation it holds all the animations  and the extra info that belongs to each
@@ -202,13 +205,15 @@ class Pet:
     def animate_speech_bubble(self):
         # get the right file for the current mood
         image = "sprites/" + "speech_bubbles/" + self.mood + ".png"
+        image_size = 64
+
 
         frames = 5 # amount of speech bubble sprites
         if self.speech_bubble_frame >= frames: # reset to avoid value error with rect
             self.speech_bubble_frame = 0 # reset to avoid value error with rect
 
         # create rect change x cord when frame moves on the next number
-        rect = pygame.Rect(0 + 64 * math.floor(self.speech_bubble_frame), 0, 64, 64)
+        rect = pygame.Rect(0 + image_size * math.floor(self.speech_bubble_frame), 0, image_size, image_size)
 
         # load the image
         load_image = pygame.image.load(image)
@@ -230,11 +235,11 @@ class Pet:
 
         # position it to the pet's right
         if self.direction == "right":
-            x = self.x + image_size
+            x = self.x + self.width
 
             # makes sure it does not go offscreen (go to the opposite side)
             if x + image_size > self.display_width:
-                x = self.x - 64
+                x = self.x - image_size
                 image = pygame.transform.flip(image, True, False)
 
         else:
@@ -244,11 +249,11 @@ class Pet:
 
             # same thing here
             if x < 0:
-                x = self.x + 64
+                x = self.x + image_size
                 image = pygame.transform.flip(image, True, False)
 
         # position it above the pet's head
-        y = self.y - 48
+        y = self.y - (image_size - 12)
 
         # print on screen
         self.window.blit(image, (x, y))
@@ -321,7 +326,9 @@ class Pet:
         # print sprite image from the dictionary based on the current animation it is on and the direction it is facing,
         sprite = self.sprites[self.current_animation][self.direction][
             math.floor(self.frame)]  # as well as indexing the right animation frame
-        self.window.blit(sprite, (self.x, self.y))
+
+        sprite_small = pygame.transform.scale(sprite, self.size)
+        self.window.blit(sprite_small, (self.x, self.y))
 
 
 
