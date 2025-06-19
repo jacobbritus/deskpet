@@ -7,6 +7,8 @@ import win32con
 import win32gui
 import os
 from win32api import GetSystemMetrics
+
+from mouse_interaction import Mouse
 from sprites_config import beige_cat
 from pet import Pet
 
@@ -43,18 +45,14 @@ win32gui.SetWindowPos(pygame.display.get_wm_info()['window'], win32con.HWND_TOPM
 display_text = False
 
 
+mouse = Mouse(window)
 
-
-cats = []
-
-
-
-cats.append(Pet(window = window,
-                display_width = window_width,
-                sprite_dict = beige_cat,
-                spawn_coordinates = (random.randint(0, window_width), 80),
-                speed = 0.1,
-                frame = 0, ))
+cats = [Pet(window=window,
+            display_width=window_width,
+            sprite_dict=beige_cat,
+            spawn_coordinates=(random.randint(0, window_width), 80),
+            speed=0.1,
+            frame=0, )]
 
 color = (255, 192, 203)
 
@@ -65,8 +63,20 @@ def detect_collision(cats):
             if cat_index == other_cat_index: # skip itself
                 pass
             else:
-                if cat.rect.collidepoint((other.x, other.y)): # if cat collides with other cats
-                    cat.x = cat.x - 1 # move
+                # make the cat be able to pass
+                if cat.current_animation == "walk" and cat.rect.collidepoint((other.x, other.y)):
+                    pass
+
+                elif cat.rect.collidepoint((other.x, other.y))and not other.current_animation == "walk":
+                    cat.x = cat.x - 5
+
+
+
+
+
+
+
+
 
 while True:
     window.fill((255, 255, 255))
@@ -80,6 +90,7 @@ while True:
 
         # click "a" to spawn more cats
         if event.type == pygame.KEYDOWN:
+            # add a new cat if a pressed
             if event.key == pygame.K_a:
                 cats.append(Pet(window=window,
                                 display_width=window_width,
@@ -88,14 +99,23 @@ while True:
                                 speed=0.1,
                                 frame=0, ))
 
+            #toggle speech bubble
+            if event.key == pygame.K_s:
+                for cat in cats:
+                    if cat.toggle_speech_bubble:
+                        cat.toggle_speech_bubble = False
+                    else:
+                        cat.toggle_speech_bubble = True
+                        cat.mood_change = False
+
         # make the pet draggable if left mouse button is held down
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
             for cat in cats:
-                cat.mouse_action = "grab"
+                mouse.mouse_action = "grab"
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             for cat in cats:
-                cat.mouse_action = "pet"
+                mouse.mouse_action = "pet"
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
 
@@ -103,15 +123,13 @@ while True:
             for cat in cats:
                 if cat.follow:
                     cat.follow = False
-                    cat.current_animation = f"{subject.mood}_idle"
                 else:
-                    cat.speed = 10
-                    cat.mouse_action = "follow"
+                    mouse.mouse_action = "follow"
 
 
         elif event.type == pygame.MOUSEBUTTONUP and event.button in [1, 2, 3]:
             for subject in cats:
-                subject.mouse_action = None
+                mouse.mouse_action = None
                 pygame.mouse.set_visible(True) # make cursor visible again
 
 
@@ -121,8 +139,12 @@ while True:
     # pygame.draw.rect(window, color, pygame.Rect(0, 80, window_width, window_height))
 
 
-    for subject in cats:
-        subject.draw_self()
+
+    for cat in cats:
+        cat.draw_self()
+        mouse.run(cat, len(cats))
+
+
 
 
     # detect collisions (pure brain muscles this one lol)
