@@ -1,10 +1,8 @@
 import random
 import math
-import threading
 
 import pygame.mouse
 from datetime import datetime
-import pyautogui
 
 class Pet:
     def __init__(self, window, display_width, sprite_dict, spawn_coordinates, speed, frame):
@@ -19,15 +17,16 @@ class Pet:
         self.cooldown = 0
         self.current_animation = None
         self.mood = None
-        self.mouse_action = None
         self.width = self.height = 64
         self.no_pet_time = 0
         self.meow_cooldown = 0
         self.mood_change = False
         self.speech_bubble_frame = 0
         self.follow = False
-        self.mouse = None
         self.rect = None
+        self.toggle_speech_bubble = True
+        self.display_mood = False
+        self.collision = False
 
 
         # dict used to get a random animation it holds all the animations  and the extra info that belongs to each
@@ -124,8 +123,8 @@ class Pet:
     # initialize different dictionaries depending on the mood
 
     def update_mood(self):
-        turn_angry = 25
-        turn_sad = 100
+        turn_angry = 100
+        turn_sad = 150
         sleepy_time = (20, 5)
 
         current_hour = datetime.now().hour
@@ -218,8 +217,11 @@ class Pet:
 
 
     def draw_speech_bubble(self):
+        if not self.toggle_speech_bubble:
+            return
+
         # it is here as this function runs constantly
-        self.speech_bubble_frame += 0.13
+        self.speech_bubble_frame += 0.2
 
         # speech bubble to represent the current mood
         image = self.animate_speech_bubble()
@@ -265,117 +267,16 @@ class Pet:
 
         self.current_animation = self.mood + "_idle"  # set animation to the mood-unique idle animation
 
-    # im thinking of making this a separate class
-    def mouse_interaction(self):
-        # get the mouse x and y position on the screen
-        cursor_position = pygame.mouse.get_pos()
-
-        # create a collision point box with the pet's location and sprite size
-        rect = pygame.Rect(self.x, self.y, self.width, self.height)
-
-        # follow the cursor if right click
-        if self.mouse_action == "follow":
-            self.follow = True  # toggle following
-            threading.Thread(daemon=True,
-                             target=self.get_mouse_position).start()  # get the cursor location on the background
-
-        # check if the cursor is within the sprite's image
-        if rect.collidepoint(cursor_position):
-            self.draw_speech_bubble() # display speech bubble when just hovering over
-
-            # if angry walk away
-            if self.mood == "angry":
-                self.current_animation = "walk"
-
-
-            # if a mouse button is being clicked
-            if self.mouse_action:
-                # reposition the pet using the mouse
-                if self.mouse_action == "grab":
-
-                    if self.mood == "angry":
-                        self.mouse_action = "cancel"
-                    else:
-                        off_set = self.width // 2 # go to the sprite's middle
-                        self.x = cursor_position[0] - off_set # clamps the sprite to the mouse
-
-                # call function to pet and low chance to make happy
-                elif self.mouse_action == "pet":
-                    self.uplift_when_pet()
-
-
-
-                pygame.mouse.set_visible(False)  # make cursor invisible
-                self.cursor(self.mouse_action)  # change cursor sprite based on the action
-
-        else:
-            self.no_pet_time += 0.1
-
-    def get_mouse_position(self):
-        while True:
-            self.mouse = pyautogui.position()
-
-    def following(self):
-
-        if self.follow:
-
-            cursor_position = self.mouse
-
-            dist = math.hypot(self.x - cursor_position[0])
-
-            if dist <= 100:
-                self.current_animation = f"{self.mood}_idle"
-            else:
-
-
-                if cursor_position[0] > self.x:
-                    self.direction = "right"
-                    self.current_animation = "walk"
-
-                else:
-                    self.direction = "left"
-                    self.current_animation = "walk"
-
-
-
-    def cursor(self, form):
-        cursor_position = pygame.mouse.get_pos() # grab the cursors position
-        center = 8 # go to the cursor's middle
-        distance_to_head = 32 # go to sprite's head for grab
-
-        # custom cursor sprites and their positions
-        cursors = {
-            "grab":
-                {"image":pygame.image.load("Sprites/cursor/Win95DefGrab.png"),
-                 "location": (cursor_position[0] - center, cursor_position[1] - distance_to_head)
-                    },
-            "pet": {
-                "image":pygame.image.load("Sprites/cursor/Win95DefPalm.png"),
-                "location": (cursor_position[0] - center, cursor_position[1])
-                    },
-            "cancel": {
-                "image": pygame.image.load("Sprites/cursor/Win95Cancel.png"),
-                "location": (cursor_position[0] - center, cursor_position[1])
-            },
-            "follow": {
-                "image": pygame.image.load("Sprites/cursor/Win95DefHand.png"),
-                "location": (cursor_position[0] - center, cursor_position[1])
-            },
-        }
-         # print the custom cursor sprite at the right position
-        self.window.blit(cursors[form]["image"], cursors[form]["location"]) # print it on the window
-
-
     # handle actions that require movement
     def moving_actions(self):
         # move when animation is mobile
         if self.current_animation in ["walk"]:
             # move left
             if self.direction == "left":
-                self.x -= 1
+                self.x -= 1 * self.speed
             # move right
             if self.direction == "right":
-                self.x += 1
+                self.x += 1 * self.speed
 
 
 
@@ -394,28 +295,32 @@ class Pet:
     def get_rect(self):
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
+    def colliding(self, cat, other):
+
+            cat.x = cat.x + 5  # movecat.
+
+
 
     # everything that's in here gets called continuously which i didn't realize at first.
     def draw_self(self):
-        self.get_rect()
+        self.get_rect() # for collision
 
+        # show mood if mood changes
         if self.mood_change:
-            self.draw_speech_bubble()
+            self.draw_speech_bubble() # to show the mood speech bubble
 
 
-        self.meow()
-        self.borders()
-        self.random_action()
-        self.following()
+        self.meow() # to make sound
+        self.borders() # to stop at the screen's x borders
+        self.random_action() # to perform a random action
 
-        self.moving_actions()
-        self.player_animations()
+        self.moving_actions() # to move when the animation is mobile
+        self.player_animations() # to animate the animations
 
         # print sprite image from the dictionary based on the current animation it is on and the direction it is facing,
         sprite = self.sprite_dict[self.current_animation][self.direction][
             math.floor(self.frame)]  # as well as indexing the right animation frame
         self.window.blit(sprite, (self.x, self.y))
-        self.mouse_interaction()
 
 
 
