@@ -7,9 +7,8 @@ from datetime import datetime
 from sprites_config import cats_dictionary
 
 class Pet:
-    def __init__(self, window, color_variant, size, display_width, spawn_coordinates, speed, frame):
+    def __init__(self, window, color_variant, size, spawn_coordinates, speed, frame):
         self.window = window
-        self.display_width = display_width
         self.sprites = cats_dictionary[color_variant]
         self.x, self.y = spawn_coordinates
         self.speed = speed
@@ -26,7 +25,6 @@ class Pet:
         self.rect = None
         self.toggle_speech_bubble = True
         self.display_mood = False
-        self.collision = False
 
         self.size = size
         self.width, self.height = self.size[0], self.size[0]
@@ -62,14 +60,14 @@ class Pet:
 
 
     # stay inside window
-    def borders(self):
+    def borders(self, display_width):
 
         # this could be increased in the future to make the pet bounce back which could be funny
         bounce_back = 1
 
         # stop moving when touching right border
-        if self.x >= self.display_width - self.width: # minus sprite width for the right collision point
-            self.x =  self.display_width - (self.width + bounce_back) # bounce back
+        if self.x >= display_width - self.width: # minus sprite width for the right collision point
+            self.x =  display_width - (self.width + bounce_back) # bounce back
             self.direction = "left" # turn left
 
         # stop moving when touching left border
@@ -159,8 +157,8 @@ class Pet:
             self.mood_change = False
 
         # play sound if mood change for clarity
-        if self.mood_change:
-            Pet.sound(f"sounds/{self.mood}_sound.mp3")
+        # if self.mood_change:
+        #     Pet.sound(f"sounds/{self.mood}_sound.mp3")
 
         # call function to match current mood with its unique animations
         self.animations()
@@ -222,7 +220,7 @@ class Pet:
         return load_image.subsurface(rect)
 
 
-    def draw_speech_bubble(self):
+    def draw_speech_bubble(self, display_width):
         if not self.toggle_speech_bubble:
             return
 
@@ -238,7 +236,7 @@ class Pet:
             x = self.x + self.width
 
             # makes sure it does not go offscreen (go to the opposite side)
-            if x + image_size > self.display_width:
+            if x + image_size > display_width:
                 x = self.x - image_size
                 image = pygame.transform.flip(image, True, False)
 
@@ -301,23 +299,36 @@ class Pet:
     def get_rect(self):
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def colliding(self, cat, other):
+    @staticmethod
+    def detect_collision(cats):
+        # detect collisions (pure brain muscles this one lol)
+        for cat_index, cat in enumerate(cats):  # go through each cat
+            for other_cat_index, other in enumerate(cats):  # go through all cats per cat
+                if cat_index == other_cat_index:  # skip itself
+                    pass
+                else:
+                    # make the cat be able to pass
+                    if cat.current_animation == "walk" and cat.rect.collidepoint((other.x, other.y)):
+                        pass
 
-            cat.x = cat.x + 5  # movecat.
+
+                    elif cat.rect.collidepoint((other.x, other.y)) and not other.current_animation == "walk":
+                        cat.x = cat.x - 5
+
 
 
 
     # everything that's in here gets called continuously which i didn't realize at first.
-    def draw_self(self):
+    def draw_self(self, display_width):
         self.get_rect() # for collision
 
         # show mood if mood changes
         if self.mood_change:
-            self.draw_speech_bubble() # to show the mood speech bubble
+            self.draw_speech_bubble(display_width) # to show the mood speech bubble
 
 
         self.meow() # to make sound
-        self.borders() # to stop at the screen's x borders
+        self.borders(display_width) # to stop at the screen's x borders
         self.random_action() # to perform a random action
 
         self.moving_actions() # to move when the animation is mobile

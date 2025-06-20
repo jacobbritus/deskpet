@@ -1,5 +1,4 @@
 import random
-import threading
 
 import pygame
 import win32api
@@ -27,8 +26,8 @@ y = display_height - window_height - taskbar_height
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d, %d" %(0, y)
 
 # set window width to display width
-window_width = GetSystemMetrics(0)
-window = pygame.display.set_mode((window_width, window_height), pygame.NOFRAME)
+display_width = GetSystemMetrics(0)
+window = pygame.display.set_mode((display_width, window_height), pygame.NOFRAME)
 
 # make pygame background invisible
 fuchsia = (255, 0, 128)  # Transparency color
@@ -42,7 +41,6 @@ win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LW
 win32gui.SetWindowPos(pygame.display.get_wm_info()['window'], win32con.HWND_TOPMOST, 0,0,0,0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
 
 
-display_text = False
 sizes = ["small", "medium"]
 sizes_dict = {"small": {"size": (32, 32), "y": 32 + 80},
               "medium": {"size": (64, 64), "y": 80}}
@@ -51,31 +49,11 @@ sizes_dict = {"small": {"size": (32, 32), "y": 32 + 80},
 mouse = Mouse(window)
 
 cats = [Pet(window=window,
-            display_width=window_width,
             color_variant= "beige_cat",
             size= sizes_dict["medium"]["size"],
-            spawn_coordinates=(random.randint(0, window_width), sizes_dict["medium"]["y"]),
+            spawn_coordinates=(random.randint(0, display_width), sizes_dict["medium"]["y"]),
             speed=0.1,
             frame=0, )]
-
-
-
-def detect_collision(cats):
-    # detect collisions (pure brain muscles this one lol)
-    for cat_index, cat in enumerate(cats): # go through each cat
-        for other_cat_index, other in enumerate(cats): # go through all cats per cat
-            if cat_index == other_cat_index: # skip itself
-                pass
-            else:
-                # make the cat be able to pass
-                if cat.current_animation == "walk" and cat.rect.collidepoint((other.x, other.y)):
-                    pass
-
-                elif cat.rect.collidepoint((other.x, other.y))and not other.current_animation == "walk":
-                    cat.x = cat.x - 5
-
-
-
 
 
 while True:
@@ -95,18 +73,15 @@ while True:
                 color = random.choice(color_variants)
                 size = random.choice(sizes)
                 size_num = sizes_dict[size]["size"]
-                spawn = (random.randint(0, window_width), sizes_dict[size]["y"])
-
-                print(size)
+                spawn = (random.randint(0, display_width), sizes_dict[size]["y"])
                 cats.append(Pet(window=window,
-                                display_width=window_width,
                                 color_variant=color,
                                 size = size_num,
-                                spawn_coordinates=(random.randint(0, window_width), sizes_dict[size]["y"]),
+                                spawn_coordinates=(random.randint(0, display_width), sizes_dict[size]["y"]),
                                 speed=0.1,
                                 frame=0, ))
 
-            #toggle speech bubble
+            # click "s" to toggle speech bubble
             if event.key == pygame.K_s:
                 for cat in cats:
                     if cat.toggle_speech_bubble:
@@ -117,16 +92,12 @@ while True:
 
         # make the pet draggable if left mouse button is held down
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
-            for cat in cats:
                 mouse.mouse_action = "grab"
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            for cat in cats:
                 mouse.mouse_action = "pet"
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-
-
             for cat in cats:
                 if cat.follow:
                     cat.follow = False
@@ -135,7 +106,6 @@ while True:
 
 
         elif event.type == pygame.MOUSEBUTTONUP and event.button in [1, 2, 3]:
-            for subject in cats:
                 mouse.mouse_action = None
                 pygame.mouse.set_visible(True) # make cursor visible again
 
@@ -144,17 +114,12 @@ while True:
 
     window.fill(fuchsia)
 
-
-
     for cat in cats:
-        cat.draw_self()
-        mouse.run(cat, len(cats))
-
-
-
+        cat.draw_self(display_width)
+        mouse.run(cat, len(cats), display_width)
 
     # detect collisions (pure brain muscles this one lol)
-    detect_collision(cats)
+    Pet.detect_collision(cats)
 
     clock.tick(120)
 

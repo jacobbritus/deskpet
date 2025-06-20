@@ -30,7 +30,7 @@ def sprite_converter(sprite_file, sprite_width, sprite_height):
 
     return sprite_dict
 
-color_variants = ["beige_cat", "black_cat", "white_cat"]
+color_variants = ["beige_cat", "black_cat", "white_cat", "grey_cat", "orange_cat", "brown_cat"]
 
 cats_dictionary = {}
 
@@ -48,5 +48,4 @@ for color_variant in color_variants: # go through each color variant
 
         cats_dictionary[color_variant].update({animation_name: sprite_converter(sprite_path, 64, 64)}) # seperate the sprites
 
-        if "lay_down" in sprite_path: print(sprite_path)
 

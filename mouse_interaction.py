@@ -16,7 +16,7 @@ class Mouse:
 
 
 
-    def mouse_interaction(self, cat):
+    def mouse_interaction(self, cat, display_width):
         # get the mouse x and y position on the screen
         cursor_position = pygame.mouse.get_pos()
 
@@ -34,7 +34,7 @@ class Mouse:
         # check if the cursor is within the sprite's image
         if cat_rect.collidepoint(cursor_position[0], cat.y):
             if cat.toggle_speech_bubble:
-                cat.draw_speech_bubble() # display speech bubble when just hovering over
+                cat.draw_speech_bubble(display_width) # display speech bubble when just hovering over
 
             # if angry walk away
             if cat.mood == "angry":
@@ -127,6 +127,6 @@ class Mouse:
 
 
 
-    def run(self, cat, cat_amount):
-        self.mouse_interaction(cat)
+    def run(self, cat, cat_amount, display_width):
+        self.mouse_interaction(cat, display_width)
         self.following(cat, cat_amount)
