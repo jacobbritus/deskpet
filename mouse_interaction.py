@@ -32,7 +32,7 @@ class Mouse:
 
 
         # check if the cursor is within the sprite's image
-        if cat_rect.collidepoint(cursor_position[0], cat.y):
+        if cat_rect.collidepoint(cursor_position[0], cursor_position[1]) or self.mouse_action == "grab":
             if cat.toggle_speech_bubble:
                 cat.draw_speech_bubble(display_width) # display speech bubble when just hovering over
 
@@ -40,7 +40,7 @@ class Mouse:
             if cat.mood == "angry":
                 cat.current_animation = "walk"
 
-                if not cat_rect.collidepoint(cursor_position[0], cat.y):
+                if not cat_rect.collidepoint(cursor_position[0], cursor_position[1]):
                     cat.current_animation = "lay_down"
 
             # if a mouse button is being clicked
@@ -53,6 +53,11 @@ class Mouse:
                     else:
                         off_set = cat.width // 2 # go to the sprite's middle
                         cat.x = cursor_position[0] - off_set # clamps the sprite to the mouse
+
+                        cat.y = cursor_position[1] - off_set # clamps the sprite to the mouse
+
+
+
 
                 # call function to pet and low chance to make happy
                 elif self.mouse_action == "pet":
@@ -76,7 +81,7 @@ class Mouse:
 
 
 
-    def following(self, cat, cat_amount):
+    def following(self, cat):
 
         if cat.follow:
             dist = math.hypot(cat.x - self.cursor_position[0])
@@ -127,6 +132,6 @@ class Mouse:
 
 
 
-    def run(self, cat, cat_amount, display_width):
+    def run(self, cat, display_width):
         self.mouse_interaction(cat, display_width)
-        self.following(cat, cat_amount)
+        self.following(cat)

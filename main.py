@@ -116,7 +116,7 @@ while True:
 
     for cat in cats:
         cat.draw_self(display_width)
-        mouse.run(cat, len(cats), display_width)
+        mouse.run(cat, display_width)
 
     # detect collisions (pure brain muscles this one lol)
     Pet.detect_collision(cats)

@@ -11,6 +11,7 @@ class Pet:
         self.window = window
         self.sprites = cats_dictionary[color_variant]
         self.x, self.y = spawn_coordinates
+        self.floor = spawn_coordinates[1]
         self.speed = speed
         self.direction = None
         self.frame = frame
@@ -315,12 +316,27 @@ class Pet:
                     elif cat.rect.collidepoint((other.x, other.y)) and not other.current_animation == "walk":
                         cat.x = cat.x - 5
 
+    def fall(self):
+        if self.y < self.floor: # fall if higher than floor
+            self.y += 5
+        else:
+            self.y = self.floor # stop pet from going under the taskbar
+
+
+
+
+
+
+
+
+
 
 
 
     # everything that's in here gets called continuously which i didn't realize at first.
     def draw_self(self, display_width):
         self.get_rect() # for collision
+        self.fall()
 
         # show mood if mood changes
         if self.mood_change:
