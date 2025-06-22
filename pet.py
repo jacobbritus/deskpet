@@ -290,7 +290,7 @@ class Pet:
 
     # handle animation frames
     def player_animations(self):
-        sprite_iterate_speed = 0.13
+        sprite_iterate_speed = 0.2
 
         # increase to go to the next frame
         self.frame += sprite_iterate_speed

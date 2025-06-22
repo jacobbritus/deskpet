@@ -51,7 +51,7 @@ cats = [Pet(window=window,
             color_variant= "beige_cat",
             size= sizes_dict["medium"]["size"],
             spawn_coordinates=(random.randint(0, display_width), sizes_dict["medium"]["y"]),
-            speed=0.1,
+            speed=0.3,
             frame=0, )]
 face_detecting = False
 
@@ -82,12 +82,19 @@ while True:
 
             # click "s" to toggle speech bubble
             if event.key == pygame.K_s:
-                for cat in cats:
-                    if cat.toggle_speech_bubble:
-                        cat.toggle_speech_bubble = False
-                    elif not cat.toggle_speech_bubble:
+                if cats[0].toggle_speech_bubble:
+                    for cat in cats:
+                        if cat.toggle_speech_bubble:
+                            cat.toggle_speech_bubble = False
+                else:
+                    for cat in cats:
                         cat.toggle_speech_bubble = True
                         cat.mood_change = False
+
+                print(cats[0].toggle_speech_bubble)
+
+
+
 
 
         # make the pet draggable if left mouse button is held down
@@ -126,7 +133,7 @@ while True:
     # detect collisions (pure brain muscles this one lol)
     Pet.detect_collision(cats)
 
-    clock.tick(120)
+    clock.tick(60)
 
 
     pygame.display.update()

@@ -142,5 +142,5 @@ class Mouse:
     def run(self, display_width, cats):
         self.mouse_interaction( display_width, cats)
 
-        if self.selected_cat.follow: self.following()
+        if self.selected_cat: self.following()
         if self.grabbing: self.grab()
