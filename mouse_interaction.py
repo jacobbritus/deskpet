@@ -16,7 +16,7 @@ class Mouse:
 
 
 
-    def mouse_interaction(self, cat, display_width):
+    def mouse_interaction(self, cat,  display_width, cats):
         # get the mouse x and y position on the screen
         cursor_position = pygame.mouse.get_pos()
 
@@ -32,7 +32,7 @@ class Mouse:
 
 
         # check if the cursor is within the sprite's image
-        if cat_rect.collidepoint(cursor_position[0], cursor_position[1]) or self.mouse_action == "grab":
+        if cat_rect.collidepoint(cursor_position[0], cursor_position[1]):
             if cat.toggle_speech_bubble:
                 cat.draw_speech_bubble(display_width) # display speech bubble when just hovering over
 
@@ -46,15 +46,12 @@ class Mouse:
             # if a mouse button is being clicked
             if self.mouse_action:
                 # reposition the pet using the mouse
-                if self.mouse_action == "grab":
+                if self.mouse_action == "grab" and [cat.grab == False for cat in cats]:
+                    cat.grab = True
 
                     if cat.mood == "angry":
                         cat.mouse_action = "cancel"
-                    else:
-                        off_set = cat.width // 2 # go to the sprite's middle
-                        cat.x = cursor_position[0] - off_set # clamps the sprite to the mouse
 
-                        cat.y = cursor_position[1] - off_set # clamps the sprite to the mouse
 
 
 
@@ -71,6 +68,18 @@ class Mouse:
         else:
             cat.no_pet_time += 0.1
 
+
+    @staticmethod
+    def grabbing(cat):
+        if cat.grab:
+            cursor_position = pygame.mouse.get_pos()
+
+            off_set = cat.width // 2  # go to the sprite's middle
+            cat.x = cursor_position[0] - off_set  # clamps the sprite to the mouse
+
+            cat.y = cursor_position[1] - off_set  # clamps the sprite to the mouse
+        else:
+            pass
 
 
 
@@ -132,6 +141,7 @@ class Mouse:
 
 
 
-    def run(self, cat, display_width):
-        self.mouse_interaction(cat, display_width)
+    def run(self, cat, display_width, cats):
+        self.mouse_interaction(cat, display_width, cats)
+        self.grabbing(cat)
         self.following(cat)

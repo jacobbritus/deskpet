@@ -1,5 +1,6 @@
 import random
 import math
+import os
 
 import pygame.mouse
 from datetime import datetime
@@ -23,6 +24,7 @@ class Pet:
         self.mood_change = False
         self.speech_bubble_frame = 0
         self.follow = False
+        self.grab = False
         self.rect = None
         self.toggle_speech_bubble = True
         self.display_mood = False
@@ -35,29 +37,30 @@ class Pet:
         # dict used to get a random animation it holds all the animations  and the extra info that belongs to each
         self.all_animations = None
 
-    @staticmethod
-    def sound(file):
 
-        pygame.mixer.music.load(file)
-        pygame.mixer.music.play()
+    def sound(self,path):
+        # play sound every 60 ticks
+            sound = pygame.mixer.Sound(path)
+            pygame.mixer.Sound.play(sound)
+            return
+
+
+
+
 
     # function for sounds
     def meow(self):
 
-        # different cat sound variations
-        meows = ["meow6"]
+        moods = ["play", "don't play"]  # options
+        weight = [0.001, 0.999]  # low chance to play sound
+        mood = random.choices(moods, k=1, weights=weight)[0]  # pick a random option
 
-        # play sound every 60 ticks
-        if self.meow_cooldown >= 60 and self.mood != "sleepy":
-            # initializing the sound
-            file = "sounds/" + random.choice(meows) + ".mp3"
-            pygame.mixer.music.load(file)
-            pygame.mixer.music.play()
-
-            # reset cooldown
-            self.meow_cooldown = 0
-
-        self.meow_cooldown += 0.1
+        if mood == "play" and self.mood != "sleep":
+            folder = "sounds"
+            random_sound = random.choice(os.listdir(folder))
+            path = os.path.join(folder, random_sound)
+            sound = pygame.mixer.Sound(path)
+            pygame.mixer.Sound.play(sound)
 
 
     # stay inside window
@@ -110,7 +113,7 @@ class Pet:
             try:
                 track_name = self.all_animations[self.current_animation]["sound"]
                 self.sound(f"sounds/{track_name}.mp3")
-            except KeyError:
+            except (KeyError, FileNotFoundError):
                 pass
 
 
@@ -128,7 +131,7 @@ class Pet:
     def update_mood(self):
         turn_angry = 100
         turn_sad = 150
-        sleepy_time = (20, 5)
+        sleepy_time = (20, 7)
 
         current_hour = datetime.now().hour
 
@@ -335,6 +338,7 @@ class Pet:
 
     # everything that's in here gets called continuously which i didn't realize at first.
     def draw_self(self, display_width):
+
         self.get_rect() # for collision
         self.fall()
 
@@ -344,6 +348,8 @@ class Pet:
 
 
         self.meow() # to make sound
+
+
         self.borders(display_width) # to stop at the screen's x borders
         self.random_action() # to perform a random action
 

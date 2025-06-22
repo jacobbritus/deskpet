@@ -1,5 +1,4 @@
 import random
-
 import pygame
 import win32api
 import win32con
@@ -54,7 +53,7 @@ cats = [Pet(window=window,
             spawn_coordinates=(random.randint(0, display_width), sizes_dict["medium"]["y"]),
             speed=0.1,
             frame=0, )]
-
+face_detecting = False
 
 while True:
     window.fill((255, 255, 255))
@@ -86,9 +85,10 @@ while True:
                 for cat in cats:
                     if cat.toggle_speech_bubble:
                         cat.toggle_speech_bubble = False
-                    else:
+                    elif not cat.toggle_speech_bubble:
                         cat.toggle_speech_bubble = True
                         cat.mood_change = False
+
 
         # make the pet draggable if left mouse button is held down
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
@@ -109,6 +109,10 @@ while True:
                 mouse.mouse_action = None
                 pygame.mouse.set_visible(True) # make cursor visible again
 
+                for cat in cats:
+                    cat.grab = False
+
+
 
 
 
@@ -116,7 +120,8 @@ while True:
 
     for cat in cats:
         cat.draw_self(display_width)
-        mouse.run(cat, display_width)
+        mouse.run(cat, display_width, cats)
+
 
     # detect collisions (pure brain muscles this one lol)
     Pet.detect_collision(cats)

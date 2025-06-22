@@ -46,7 +46,7 @@ def palette_swap(image_path, output_path, old_hex, new_hex):
 # 🎨 Replace these hex codes with yours
 
 #                base      secondary   outline    eye dark  eye light  <------ grey_cat
-# old_palette = ["#55524e", "#3b3a38", "#000000", "#acacfb", "#d7d7ff"]  # old colors BLACK
+# old_palette = ["#55524e", "#3b3a38", "#000000", "#acacfb", "#d7d7ff"]  # old colors grey
 # new_palette = ["#7b644d", "#6e593d", "#000000", "#fbe677", "#fff2aa"]  # new colors TEST
 
 old_palette = []
