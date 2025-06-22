@@ -101,26 +101,26 @@ while True:
             for cat in cats:
                 if cat.follow:
                     cat.follow = False
+                    mouse.selected_cat = None
                 else:
                     mouse.mouse_action = "follow"
 
 
         elif event.type == pygame.MOUSEBUTTONUP and event.button in [1, 2, 3]:
+                mouse.grabbing = False
                 mouse.mouse_action = None
                 pygame.mouse.set_visible(True) # make cursor visible again
 
                 for cat in cats:
                     cat.grab = False
 
-
-
-
-
     window.fill(fuchsia)
 
     for cat in cats:
         cat.draw_self(display_width)
-        mouse.run(cat, display_width, cats)
+
+
+    mouse.run(display_width, cats)
 
 
     # detect collisions (pure brain muscles this one lol)
