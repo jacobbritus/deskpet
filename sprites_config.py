@@ -44,7 +44,7 @@ for color_variant in color_variants: # go through each color variant
     for sprite in os.listdir(folder_path): # go through each sprite
         sprite_path = os.path.join(folder_path, sprite) # get the correct path to the sprite
 
-        animation_name = sprite[:-4]  # create the name
+        animation_name = sprite[:-4].lower()  # create the name
 
         cats_dictionary[color_variant].update({animation_name: sprite_converter(sprite_path, 64, 64)}) # seperate the sprites
 
