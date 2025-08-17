@@ -1,11 +1,10 @@
 # Deskpet
 
-This is a desktop pet created using Python and Pygame. The pet is animated and interacts with the user through basic actions. The pet also has moods such as happy, sad, angry, and sleepy, which influence its behavior and responses.
+This is a (WINDOWS ONLY) desktop pet created using Python and Pygame. The pet is animated and interacts with the user through basic actions. The pet also has moods such as happy, sad, angry, and sleepy, which influence its behavior and responses.
 
 ## Features
 
 - Custom animated pixel art pet
-- AI-powered chat system
 - Mood system (happy, angry, sad, sleepy)
 - Pet interaction: petting and dragging
 - Transparent and frameless window
